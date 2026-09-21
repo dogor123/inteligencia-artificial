@@ -4,7 +4,6 @@ Script para realizar un Analisis Exploratorio de Datos (EDA) basico
 sobre un archivo CSV de clima, utilizando NumPy y Matplotlib.
 
 Proyecto: Prediccion de Lluvia (Cartago, Valle del Cauca)
-Sigue la misma estructura de eda_cultivos.py (Clase 4).
 """
 
 import numpy as np

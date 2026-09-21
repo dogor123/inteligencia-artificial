@@ -1,7 +1,7 @@
 # Predicción de Lluvia
 
-Proyecto de la asignatura Inteligencia Artificial (9no semestre).
-Predicción de lluvia usando datos climáticos de Cartago, Valle del Cauca.
+Proyecto de la asignatura Inteligencia Artificial.
+Predicción de lluvia usando datos climáticos de Cartago, Valle del Cauca (simulados).
 
 ## Tecnologías
 - Python, NumPy, Matplotlib
