@@ -1,0 +1,11 @@
+services:
+  python:
+    build: .
+    container_name: prediccion_lluvia
+    volumes:
+      - ./src:/app/src
+      - ./notebooks:/app/notebooks
+      - ./data:/app/data
+      - ./outputs:/app/outputs
+    working_dir: /app
+    command: tail -f /dev/null
