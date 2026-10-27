@@ -25,7 +25,7 @@ En este corte se amplió el alcance del proyecto a tres localidades reales del n
 Valle del Cauca: **El Billar**, **Zaragoza** y **Ansermanuevo**. Ante la imposibilidad de
 obtener series históricas completas (temperatura, humedad, presión) para esas tres zonas
 específicas desde IDEAM/CVC, se construyó un **dataset simulado anclado en climatología
-real** investigada para la región (ver detalle en el documento `Avance2_GrupoAgricultura_PrediccionLluvia.pdf`, sección 2).
+real** investigada para la región (ver detalle en el documento `Avance2_Grupo01_PrediccionLluvia.pdf`, sección 2).
 
 ### Estructura añadida
 
