@@ -1,0 +1,5 @@
+Modelo,Exactitud,Precisión,Recall,F1,Exactitud entrenamiento,F1 val. cruzada
+Regresión logística,0.83,0.867,0.839,0.852,0.793,0.833
+KNN (5 vecinos),0.774,0.806,0.806,0.806,0.832,0.803
+Árbol de decisión,0.811,0.92,0.742,0.821,0.76,0.727
+Red neuronal (MLP),0.868,0.929,0.839,0.881,0.784,0.815

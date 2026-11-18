@@ -1,0 +1,189 @@
+============================================================
+ PREPARACION DE DATOS CON PANDAS - AVANCE 2
+============================================================
+Datos cargados: 267 filas, 7 columnas.
+
+============================================================
+EXPLORACION INICIAL
+============================================================
+
+--- df.info() ---
+<class 'pandas.DataFrame'>
+RangeIndex: 267 entries, 0 to 266
+Data columns (total 7 columns):
+ #   Column            Non-Null Count  Dtype  
+---  ------            --------------  -----  
+ 0   fecha             267 non-null    str    
+ 1   localidad         267 non-null    str    
+ 2   temperatura       262 non-null    float64
+ 3   humedad           259 non-null    float64
+ 4   presion           267 non-null    float64
+ 5   precipitacion_mm  267 non-null    float64
+ 6   llovio            267 non-null    int64  
+dtypes: float64(4), int64(1), str(2)
+memory usage: 14.7 KB
+
+--- df.head() ---
+        fecha  localidad  temperatura  ...  presion  precipitacion_mm  llovio
+0  2026-10-19   Zaragoza         18.3  ...   1012.6              15.5       1
+1  2026-09-09   Zaragoza         21.9  ...   1013.4               0.0       0
+2  2026-09-12  El Billar         23.5  ...   1011.3               0.0       0
+3  2026-08-29   Zaragoza         21.1  ...   1010.0               0.0       0
+4  2026-10-01   Zaragoza         19.1  ...   1013.4              21.8       1
+
+[5 rows x 7 columns]
+
+--- Valores nulos por columna ---
+fecha               0
+localidad           0
+temperatura         5
+humedad             8
+presion             0
+precipitacion_mm    0
+llovio              0
+dtype: int64
+
+--- Filas duplicadas ---
+Duplicados exactos: 5
+
+--- Valores unicos en 'localidad' (antes de limpiar) ---
+<StringArray>
+[        'Zaragoza',        'El Billar',     'Ansermanuevo',
+     'ANSERMANUEVO', '  Ansermanuevo  ',        'EL BILLAR',
+    '  El Billar  ',         'zaragoza',     'ansermanuevo']
+Length: 9, dtype: str
+
+Duplicados eliminados: 6
+
+============================================================
+RESUMEN ANTES / DESPUES
+============================================================
+Metrica                  Antes          Despues
+Filas                    267            261
+Columnas                 7              9
+Valores nulos totales    13             0
+Duplicados               5              0
+
+Dataset limpio guardado en: data/proyecto_limpio.csv
+Forma final: (261, 9)
+============================================================
+ VISUALIZACIONES CON SEABORN - AVANCE 2
+============================================================
+Datos cargados para visualizacion: 261 filas.
+Guardado: outputs/distribucion_precipitacion_localidad.png
+Guardado: outputs/pct_dias_lluvia_localidad.png
+Guardado: outputs/humedad_vs_precipitacion.png
+Guardado: outputs/presion_por_lluvia.png
+
+============================================================
+INTERPRETACIONES
+============================================================
+
+1. Distribucion de precipitacion por localidad:
+   La mayoria de los dias en las tres localidades tienen precipitacion cercana
+   a 0 mm (la barra mas alta del histograma), con una cola larga hacia valores
+   mayores en los dias de lluvia fuerte. El Billar muestra la cola mas pesada,
+   consistente con ser la zona de mayor elevacion simulada.
+
+2. Dias con lluvia por localidad:
+   El Billar presenta el mayor porcentaje de dias con lluvia
+   (67.8%), seguido de Ansermanuevo
+   (57.5%) y Zaragoza
+   (52.9%). Esto confirma que la localidad por
+   si sola ya aporta informacion util para el modelo.
+
+3. Humedad vs precipitacion:
+   Existe una correlacion positiva de 0.28 entre humedad y
+   precipitacion: los dias con lluvia se concentran en la zona de humedad alta
+   del grafico, lo que respalda usar la humedad como variable predictora
+   principal del perceptron.
+
+4. Presion segun lluvia:
+   Los dias con lluvia tienen una presion promedio de
+   1012.4 hPa, mientras que los dias sin lluvia
+   promedian 1013.0 hPa. La diferencia es consistente
+   con la fisica atmosferica: menor presion favorece la formacion de nubes y
+   precipitacion.
+
+
+Visualizaciones completadas.
+============================================================
+ PERCEPTRON DESDE CERO CON NUMPY - AVANCE 2
+============================================================
+Datos cargados: 261 registros, 2 variables de entrada.
+Entrenamiento: 208 | Prueba: 53
+
+Medias (humedad, presion): [  67.31442308 1012.66634615]
+Desviaciones (humedad, presion): [12.88367925  2.6883692 ]
+
+Entrenando...
+Epoca    0  -  Perdida: 0.6931
+Epoca  100  -  Perdida: 0.6532
+Epoca  200  -  Perdida: 0.6528
+Epoca  300  -  Perdida: 0.6528
+Epoca  400  -  Perdida: 0.6528
+Epoca  500  -  Perdida: 0.6528
+Epoca  600  -  Perdida: 0.6528
+Epoca  700  -  Perdida: 0.6528
+Epoca  800  -  Perdida: 0.6528
+Epoca  900  -  Perdida: 0.6528
+
+============================================================
+RESULTADOS
+============================================================
+Peso humedad (w1): 0.3697
+Peso presion (w2): -0.1063
+Sesgo (b):         0.4454
+Perdida inicial:   0.6931
+Perdida final:     0.6528
+Precision en entrenamiento: 61.54%
+Precision en PRUEBA:        58.49%
+Guardado: outputs/curva_aprendizaje.png
+Guardado: outputs/frontera_decision.png
+
+INTERPRETACION:
+- w1 (humedad) = 0.3697: signo positivo,
+  es decir que a mayor humedad, mayor es la
+  probabilidad estimada de lluvia. Esto coincide con la correlacion
+  positiva observada en el EDA (Seccion C).
+- w2 (presion) = -0.1063: signo negativo,
+  es decir que a mayor presion, menor es la
+  probabilidad estimada de lluvia. Esto coincide con la fisica
+  atmosferica (menor presion favorece la lluvia).
+- La precision de 58.5% para un modelo lineal tan simple
+  (una sola neurona, 2 variables) indica que el problema es parcialmente
+  pero no totalmente separable de forma lineal con estas dos variables:
+  hay zonas donde dias con y sin lluvia se mezclan (visible en la
+  frontera de decision), lo que sugiere que un modelo mas complejo
+  (red con mas capas, o mas variables de entrada) podria mejorar el
+  resultado en el proyecto final.
+
+Registros para entrenar: 208 | para probar: 53
+
+Comparación de modelos (datos de prueba):
+             Modelo  Exactitud  Precisión  Recall    F1  Exactitud entrenamiento  F1 val. cruzada
+Regresión logística      0.830      0.867   0.839 0.852                    0.793            0.833
+    KNN (5 vecinos)      0.774      0.806   0.806 0.806                    0.832            0.803
+  Árbol de decisión      0.811      0.920   0.742 0.821                    0.760            0.727
+ Red neuronal (MLP)      0.868      0.929   0.839 0.881                    0.784            0.815
+
+Mejor modelo según F1 de validación cruzada: Regresión logística
+Pesos aprendidos (variables estandarizadas):
+  humedad: +0.447
+  presion: +0.071
+  temperatura: -1.833
+  loc_Ansermanuevo: +0.133
+  loc_El Billar: +0.583
+  loc_Zaragoza: -0.732
+  sesgo (b): +0.595
+
+Matriz de confusión (filas = real, columnas = predicción):
+[[18  4]
+ [ 5 26]]
+Gráfico guardado: outputs/matriz_confusion.png
+Modelo guardado: src/modelo_final.joblib
+Predicciones con el modelo guardado:
+   localidad  humedad  presion  temperatura  prob_lluvia_%  resultado
+   El Billar     88.0   1009.5         18.5           98.9    Lloverá
+    Zaragoza     55.0   1016.0         24.0            1.3 No lloverá
+Ansermanuevo     74.0   1012.5         21.0           70.4    Lloverá

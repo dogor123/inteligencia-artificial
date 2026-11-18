@@ -145,18 +145,30 @@ def main():
     print("=" * 60)
 
     X, y = cargar_datos(ARCHIVO_ENTRADA)
-    X_est, medias, desviaciones = estandarizar(X)
+
+    # Division 80/20 ANTES de escalar, con semilla fija (evita fuga de informacion)
+    rng = np.random.default_rng(42)
+    indices = rng.permutation(len(y))
+    corte = int(0.8 * len(y))
+    X_train, X_test = X[indices[:corte]], X[indices[corte:]]
+    y_train, y_test = y[indices[:corte]], y[indices[corte:]]
+    print(f"Entrenamiento: {len(y_train)} | Prueba: {len(y_test)}")
+
+    # Media y desviacion se calculan SOLO con entrenamiento y se reusan en prueba
+    X_est, medias, desviaciones = estandarizar(X_train)
+    X_test_est = (X_test - medias) / desviaciones
 
     print(f"\nMedias (humedad, presion): {medias}")
     print(f"Desviaciones (humedad, presion): {desviaciones}")
 
     # Perdida inicial (antes de entrenar, con w=0, b=0)
-    perdida_inicial = calcular_perdida(y, sigmoide(np.zeros(len(y))))
+    perdida_inicial = calcular_perdida(y_train, sigmoide(np.zeros(len(y_train))))
 
     print("\nEntrenando...")
-    w, b, historial_perdida = entrenar_perceptron(X_est, y, tasa_aprendizaje=0.1, epocas=1000)
+    w, b, historial_perdida = entrenar_perceptron(X_est, y_train, tasa_aprendizaje=0.1, epocas=1000)
 
-    precision = calcular_precision(X_est, y, w, b)
+    precision_train = calcular_precision(X_est, y_train, w, b)
+    precision = calcular_precision(X_test_est, y_test, w, b)   # datos NUNCA vistos
 
     print("\n" + "=" * 60)
     print("RESULTADOS")
@@ -166,10 +178,11 @@ def main():
     print(f"Sesgo (b):         {b:.4f}")
     print(f"Perdida inicial:   {perdida_inicial:.4f}")
     print(f"Perdida final:     {historial_perdida[-1]:.4f}")
-    print(f"Precision (accuracy): {precision * 100:.2f}%")
+    print(f"Precision en entrenamiento: {precision_train * 100:.2f}%")
+    print(f"Precision en PRUEBA:        {precision * 100:.2f}%")
 
     graficar_curva_aprendizaje(historial_perdida)
-    graficar_frontera_decision(X_est, y, w, b, medias, desviaciones)
+    graficar_frontera_decision(X_est, y_train, w, b, medias, desviaciones)
 
     print(f"""
 INTERPRETACION:
