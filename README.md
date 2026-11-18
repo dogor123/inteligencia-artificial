@@ -95,6 +95,7 @@ Los nulos se imputan con la mediana **por localidad**; la humedad mayor a 100 % 
 | Sesgo (b) | 0.4454 |
 | Pérdida (log loss) | 0.6931 → 0.6528 |
 | Exactitud entrenamiento / prueba | 61.54 % / 58.49 % |
+| Línea base en prueba (predecir siempre "llovió") | 54.72 % |
 
 Los datos se escalan con la media y desviación **del entrenamiento** y esos mismos valores se aplican a la prueba. Un modelo lineal de una neurona con dos variables es limitado: la exactitud modesta indica que las clases se solapan.
 
@@ -106,8 +107,11 @@ Los datos se escalan con la media y desviación **del entrenamiento** y esos mis
 | KNN (5 vecinos) | 0.774 | 0.806 | 0.806 | 0.806 | 0.803 |
 | Árbol de decisión | 0.811 | 0.920 | 0.742 | 0.821 | 0.727 |
 | Red neuronal (MLP) | 0.868 | 0.929 | 0.839 | 0.881 | 0.815 |
+| Línea base (predecir siempre "lloverá") | 0.585 | — | — | 0.738 | — |
 
 **Modelo elegido: regresión logística**, por tener el mejor F1 en validación cruzada. Con solo 53 registros de prueba, un acierto más o menos cambia mucho el porcentaje, por eso se prefiere la validación cruzada. Se usa **F1** porque un falso negativo (decir "no lloverá" cuando sí llueve) le cuesta más al agricultor que una falsa alarma. Matriz de confusión del modelo elegido: `[[18, 4], [5, 26]]` (`outputs/matriz_confusion.png`).
+
+**Control:** una regresión logística con solo humedad y presión (las mismas entradas del perceptrón) obtiene exactitud 0.679 en prueba y F1 0.779. Gran parte de la ventaja del modelo final viene de la temperatura, que en el simulador se genera más baja en días de lluvia (ver sección 6).
 
 `precipitacion_mm` **no** se usa como entrada: `llovio` se define a partir de ella (`llovio = 1` si hay más de 0 mm), y usarla sería fuga de información.
 
